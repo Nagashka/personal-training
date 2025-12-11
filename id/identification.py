@@ -18,10 +18,10 @@ class LufthansaAPI:
     def get_token(self):
         url = f"{self.url}/oauth/token"
         response = requests.post(url, data={
-            'client_id': self.client_id,
-            'client_secret': self.client_secret,
-            'grant_type': 'client_credentials'
-        })
+                                                'client_id': self.client_id,
+                                                'client_secret': self.client_secret,
+                                                'grant_type': 'client_credentials'
+                                            })
         if response.status_code == 200:
             self.token = response.json()['access_token']
             print("[INFO] Successfully authenticated with Lufthansa API.")

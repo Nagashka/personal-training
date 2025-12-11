@@ -8,8 +8,8 @@ load_dotenv()
 
 class LufthansaAPI:
     def __init__(self):
-        self.LH_CLIENT_ID = os.getenv("LH_CLIENT_ID")
-        self.LH_CLIENT_SECRET = os.getenv("LH_CLIENT_SECRET")
+        self.client_id = os.getenv("Lufth_client_id")
+        self.client_secret = os.getenv("Lufth_client_secret")
         self.url = "https://api.lufthansa.com/v1"
         self.token = None
         self.token = self.get_token()
@@ -18,8 +18,8 @@ class LufthansaAPI:
     def get_token(self):
         url = f"{self.url}/oauth/token"
         response = requests.post(url, data={
-            'client_id': self.LH_CLIENT_ID,
-            'client_secret': self.LH_CLIENT_SECRET,
+            'client_id': self.client_id,
+            'client_secret': self.client_secret,
             'grant_type': 'client_credentials'
         })
         if response.status_code == 200:

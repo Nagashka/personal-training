@@ -3,25 +3,40 @@ import os
 import requests
 import json
 
+# Load from .env file
 load_dotenv()
 
-client_secret = os.getenv('client_secret')
-client_id = os.getenv('client_id')
-grant_type = os.getenv('grant_type')
-
-class _id():
-    def __init__(self, url):
-        self.url = url
-        self.client_secret = client_secret
-        self.client_id = client_id
-        self.data = {"grant_type": grant_type, "client_id": client_id, "client_secret": client_secret}
+class LufthansaAPI:
+    def __init__(self):
+        self.LH_CLIENT_ID = os.getenv("LH_CLIENT_ID")
+        self.LH_CLIENT_SECRET = os.getenv("LH_CLIENT_SECRET")
+        self.url = "https://api.lufthansa.com/v1"
+        self.token = None
         self.token = self.get_token()
 
+    # Token retrieval method
     def get_token(self):
-            self.token_response = requests.post(url + 'oauth/token', data=self.data) #Get token
-            if self.token_response.status_code == 200: #Token validated
-                token = token_response.json().get('access_token')
-            else: #Token Echec
-                token = None
-                print("Token error:", token_response.text)
-            return token
+        url = f"{self.url}/oauth/token"
+        response = requests.post(url, data={
+            'client_id': self.LH_CLIENT_ID,
+            'client_secret': self.LH_CLIENT_SECRET,
+            'grant_type': 'client_credentials'
+        })
+        if response.status_code == 200:
+            self.token = response.json()['access_token']
+            print("[INFO] Successfully authenticated with Lufthansa API.")
+            return self.token
+        else:
+            print(f"[ERROR] : {response.status_code} - {response.text}")
+            return None
+
+
+
+if __name__ == "__main__":
+    lufthansa_api = LufthansaAPI()
+    token = lufthansa_api.get_token()
+    print(f"Token d'accès : {lufthansa_api.token}")
+
+
+
+#401 token invalid

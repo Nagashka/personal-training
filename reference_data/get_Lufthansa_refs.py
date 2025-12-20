@@ -22,7 +22,6 @@ class LufthansaRefs:
 
     # Airport import
     def get_airports(self):
-        self.waiting_calculation()
         url = f"{self.api.url}/mds-references/airports"
         airports_df = pd.DataFrame()
         for i in range(int(wanted_items / 100)):
@@ -60,12 +59,12 @@ class LufthansaRefs:
         if waiting_s < 60:
             print(f"{outpout} {waiting_s}s")
         else:
-            waiting = round(waiting_s / 60 , 2)
+            waiting = round(waiting_s / 60 , 0)
             print(f"{outpout} {waiting}m")
 
     # Get all datas and merge them in a csv file
     def get_datas(self):
-        name_csv = "airports_references.csv"
+        name_csv = "airports_references.parquet"
         airports_df = self.get_airports()
         time.sleep(5)
         countries_df = self.get_countries()
@@ -73,10 +72,11 @@ class LufthansaRefs:
         refs_df = refs_df.reset_index()
         refs_df = refs_df[['Airport_IATA', 'Airport_Name', 'Country_Code', 'Country_Name', 'Latitude', 'Longitude']]
         refs_df.set_index('Airport_IATA', inplace=True)
-        refs_df.to_csv(name_csv, index=True)
+        refs_df.to_parquet(name_csv, engine="pyarrow",  index=True)
         print(f"[INFO] The references are available in the: {name_csv} file !")       
 
 
 
 if __name__ == "__main__":
+    LufthansaRefs().waiting_calculation()
     LufthansaRefs().get_datas()
